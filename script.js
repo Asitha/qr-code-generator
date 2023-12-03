@@ -42,3 +42,6 @@ function generateRandomNumberAndQRCode() {
     document.getElementById('randomNumber').innerText = `Code: ${code}`;
     generateQRCode(code);
 }
+
+document.addEventListener('DOMContentLoaded', generateRandomNumberAndQRCode);
+
