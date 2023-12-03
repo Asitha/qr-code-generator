@@ -1,33 +1,44 @@
-function generateRandomNumber() {
-    // Generates a random number between 0 and 999999
-    return Math.floor(Math.random() * 1000000);
+function getQueryParam(param) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
 }
 
 function generateQRCode(text) {
-    // Clear previous QR code
     var qrContainer = document.getElementById('qrcode');
-    qrContainer.innerHTML = '';
+    qrContainer.innerHTML = ''; // Clear previous QR code
 
-    // Generate new QR code
-    QRCode.toCanvas(document.createElement('canvas'), text, function (error, canvas) {
-        if (error) {
-            console.error('Error generating QR code: ', error);
-            return;
-        }
+    var canvas = document.createElement('canvas');
+    QRCode.toCanvas(canvas, text, function (error) {
+        if (error) console.error(error);
         qrContainer.appendChild(canvas);
+        createDownloadLink(canvas, text);
     });
 }
 
-function generateRandomNumberAndQRCode() {
-    // Generate random number
-    const randomNumber = generateRandomNumber();
+function createDownloadLink(canvas, text) {
+    var downloadLink = document.createElement('a');
+    downloadLink.innerText = 'Download QR Code';
+    downloadLink.href = canvas.toDataURL('image/png');
+    downloadLink.download = 'qr-code.png';
 
-    // Display random number
-    document.getElementById('randomNumber').innerText = `Random Number: ${randomNumber}`;
+    var qrContainer = document.getElementById('qrcode');
+    qrContainer.appendChild(downloadLink);
 
-    // Generate and display QR code for the random number
-    generateQRCode(randomNumber.toString());
+    // Display URL for generated QR code
+    var urlDisplay = document.getElementById('urlDisplay');
+    var currentUrl = window.location.href.split('?')[0]; // Base URL
+    urlDisplay.innerText = 'URL for this QR Code: ' + currentUrl + '?code=' + encodeURIComponent(text);
 }
 
-// Generate initial random number and QR code when the page loads
+function generateRandomNumberAndQRCode() {
+    let code = getQueryParam('code');
+    if (!code) {
+        code = Math.floor(Math.random() * 1000000).toString(); // Generates a random number between 0 and 999999
+    }
+
+    document.getElementById('randomNumber').innerText = `Code: ${code}`;
+    generateQRCode(code);
+}
+
+// Initial generation on page load
 document.addEventListener('DOMContentLoaded', generateRandomNumberAndQRCode);
