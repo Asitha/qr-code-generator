@@ -24,7 +24,10 @@ function createDownloadLink(canvas, text) {
     var qrContainer = document.getElementById('qrcode');
     qrContainer.appendChild(downloadLink);
 
-    // Display URL for generated QR code
+    updateUrlDisplay(text);
+}
+
+function updateUrlDisplay(text) {
     var urlDisplay = document.getElementById('urlDisplay');
     var currentUrl = window.location.href.split('?')[0]; // Base URL
     urlDisplay.innerText = 'URL for this QR Code: ' + currentUrl + '?code=' + encodeURIComponent(text);
@@ -39,6 +42,3 @@ function generateRandomNumberAndQRCode() {
     document.getElementById('randomNumber').innerText = `Code: ${code}`;
     generateQRCode(code);
 }
-
-// Initial generation on page load
-document.addEventListener('DOMContentLoaded', generateRandomNumberAndQRCode);
